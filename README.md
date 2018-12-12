@@ -1,2 +1,2 @@
-# ZJQ
+# sudoku
 数独
