@@ -1,0 +1,3 @@
+﻿  sudoku.cpp
+d:\sudoku\sudoku\sudoku.cpp(33): warning C4018: “<”: 有符号/无符号不匹配
+  sudoku.vcxproj -> D:\sudoku\Debug\sudoku.exe
