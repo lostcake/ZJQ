@@ -9,10 +9,98 @@
 using namespace std;
 
 int n=0;
+int sdk[9][9];
+
+bool judge_row(int x, int y, int m)
+{
+	int i;
+	for (i = 0; i < 9; i++)
+	{
+		if (i != y && sdk[x][i] == m) return false;
+	}
+	return true;
+}
+
+bool judge_column(int x, int y, int m)
+{
+	int i;
+	for (i = 0; i < 9; i++)
+	{
+		if (i != x && sdk[i][y] == m) return false;
+	}
+	return true;
+}
+
+bool judge_box(int x, int y, int m)
+{
+	int box_x, box_y, i, j;
+	box_x = x / 3;
+	box_y = y / 3;
+	box_x = box_x * 3;
+	box_y = box_y * 3;
+	for (i = 0; i < 3; i++)
+	{
+		for (j = 0; j < 3; j++)
+		{
+			if ((box_x + i != x) && (box_y + j != y) && (sdk[box_x + i][box_x + j] == m)) return false;
+		}
+	}
+	return true;
+}
+
+bool judge(int x, int y, int m)
+{
+	if (judge_box(x, y, m) && judge_row(x, y, m) && judge_column(x, y, m)) return true;
+	else return false;
+}
+
+bool fill(int m)
+{
+	int i, x, y; //x是第m个元素的行数，y是列数
+	if (m >= 81) return true;
+	x = m / 9;
+	y = m % 9;
+	if (sdk[x][y] == 0)
+	{
+		for (i = 1; i <= 9; i++)
+		{
+			if (judge(x, y, i))
+			{
+				sdk[x][y] = i;
+				return fill(m + 1);
+			}
+		}
+	}
+	else return fill(m + 1);
+	return false;
+}
 
 void solve(FILE *fp)
 {
-	cout << "开始求解" << endl;
+	int i, j;
+	int beginning;
+	FILE *output;
+	errno_t err;
+	err = fopen_s(&output, "D:\sudoku.txt", "w");
+	while (fscanf_s(fp, "%d", &beginning) != EOF)
+	{
+		sdk[0][0] = beginning;
+		for (i = 1; i < 9; i++) fscanf_s(fp, "%d", &sdk[0][i]);
+		for (i = 1; i < 9; i++)
+		{
+			for (j = 0; j < 9; j++) fscanf_s(fp, "%d", &sdk[i][j]);
+		}
+		if (fill(0))
+		{
+			for (i = 0; i < 9; i++)
+			{
+				for (j = 0; j < 8; j++) fprintf_s(output, "%d ", sdk[i][j]);
+				fprintf_s(output, "%d\n", sdk[i][8]);
+			}
+			fprintf_s(output, "\n");
+		}
+	}
+	cout << "求解完毕" << endl;
 	return;
 }
 
