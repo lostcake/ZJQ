@@ -1,3 +1,5 @@
 ﻿  sudoku.cpp
-d:\sudoku\sudoku\sudoku.cpp(84): warning C4129: “s”: 不可识别的字符转义序列
+d:\sudoku\sudoku\sudoku.cpp(141): warning C4129: “s”: 不可识别的字符转义序列
+d:\sudoku\sudoku\sudoku.cpp(140): warning C4101: “j”: 未引用的局部变量
+d:\sudoku\sudoku\sudoku.cpp(183): warning C4129: “s”: 不可识别的字符转义序列
   sudoku.vcxproj -> D:\sudoku\x64\Debug\sudoku.exe

@@ -4,7 +4,7 @@
 #include "pch.h"
 #include <iostream>
 #include "string.h"
-#include "math.h"
+#include "time.h"
 
 using namespace std;
 
@@ -52,6 +52,105 @@ bool judge(int x, int y, int m)
 {
 	if (judge_box(x, y, m) && judge_row(x, y, m) && judge_column(x, y, m)) return true;
 	else return false;
+}
+
+void change(int a,int b)
+{
+	int i, tmp;
+	for (i = 0; i < 9; i++)
+	{
+		tmp = sdk[a][i];
+		sdk[a][i] = sdk[b][i];
+		sdk[b][i] = tmp;
+	}
+	return;
+}
+
+void create_sdk(int x)
+{
+	int i, j, flag, s, t;
+	if (x >= 9)
+	{
+		for (i = 0; i < 3; i++)
+		{
+			for (j = 0; j < 3; j++)
+			{
+				sdk[3][3 * i + j] = sdk[0][3 * i + (j + 1) % 3];
+				sdk[6][3 * i + j] = sdk[0][3 * i + (j + 2) % 3];
+			}
+		}
+		for (i = 0; i < 9; i++)
+		{
+			sdk[1][i] = sdk[0][(i + 3) % 9];
+			sdk[2][i] = sdk[0][(i + 6) % 9];
+			sdk[4][i] = sdk[3][(i + 3) % 9];
+			sdk[5][i] = sdk[3][(i + 6) % 9];
+			sdk[7][i] = sdk[6][(i + 3) % 9];
+			sdk[8][i] = sdk[6][(i + 6) % 9];
+		}
+		for (i = 0; i < 6; i++)
+		{
+			for (j = 0; j < 6; j++)
+			{
+				if ((i == 1) || (i == 3) || (i == 5)) change(4, 5);
+				if ((i == 2) || (i == 4)) change(3, 4);
+				if ((j == 1) || (j == 3) || (j == 5)) change(7, 8);
+				if ((j == 2) || (j == 4)) change(6, 7);
+				n--;
+				for (s = 0; s < 9; s++)
+				{
+					for (t = 0; t < 8; t++)
+					{
+						cout << sdk[s][t] << " ";
+					}
+					cout << sdk[s][8] << endl;
+				}
+				if (n > 0) cout << endl;
+				else return;
+			}
+		}
+	}
+	else
+	{
+		for (i = 1; i <= 9; i++)
+		{
+			flag = 1;
+			for (j = 0; j < x; j++)
+			{
+				if (sdk[0][j] == i)
+				{
+					flag = 0;
+					break;
+				}
+			}
+			if (flag == 1)
+			{
+				sdk[0][x] = i;
+				create_sdk(x + 1);
+			}
+			if (n <= 0) return;
+		}
+	}
+	
+}
+
+void create_rand(void)
+{
+	FILE *stream;
+	int i, j, r;
+	freopen_s(&stream, "D:\sudoku.txt", "w", stdout);
+	srand((unsigned)time(0));
+	sdk[0][0] = 4;
+	r = rand() % 8 + 1;
+	sdk[0][1] = (4 + r) % 9;
+	if (sdk[0][1] == 0) sdk[0][1] = 9;
+	for (i = 0; i < 8; i++)
+	{
+		create_sdk(2);
+		sdk[0][1]++;
+		if (sdk[0][1] == 4) sdk[0][1]++;
+		if (n <= 0) return;
+	}
 }
 
 bool fill(int m)
@@ -136,8 +235,7 @@ int main(int argc,char *argv[])
 			else if (flag == -1) cout << "请输入数字N（1<=N<=1000000）" << endl;
 			else
 			{
-				cout << n << endl;
-				//开始创建数独
+				create_rand();
 			}
 		}
 		else if (argv[1][0] == '-'&&argv[1][1] == 's'&&strlen(argv[1]) == 2)
