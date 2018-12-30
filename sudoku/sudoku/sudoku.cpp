@@ -8,9 +8,13 @@
 
 using namespace std;
 
-int n=0;
-int sdk[9][9];
 
+int n=0;  //需要生成的数独个数
+int sdk[9][9];  //存放数独的数组
+char buffer[163000000];
+int cnt = 0;
+
+//判断x行是否存在与m相同的数字
 bool judge_row(int x, int y, int m)
 {
 	int i;
@@ -21,6 +25,7 @@ bool judge_row(int x, int y, int m)
 	return true;
 }
 
+//判断y列是否存在与m相同的数字
 bool judge_column(int x, int y, int m)
 {
 	int i;
@@ -31,6 +36,7 @@ bool judge_column(int x, int y, int m)
 	return true;
 }
 
+//判断(x,y)所在的九宫格内是否存在与m相同的数字
 bool judge_box(int x, int y, int m)
 {
 	int box_x, box_y, i, j;
@@ -48,12 +54,14 @@ bool judge_box(int x, int y, int m)
 	return true;
 }
 
+//综合判断行、列、九宫格
 bool judge(int x, int y, int m)
 {
 	if (judge_box(x, y, m) && judge_row(x, y, m) && judge_column(x, y, m)) return true;
 	else return false;
 }
 
+//交换数独中a行和b行的元素
 void change(int a,int b)
 {
 	int i, tmp;
@@ -66,11 +74,13 @@ void change(int a,int b)
 	return;
 }
 
+//创建数独数组，并将其输出
 void create_sdk(int x)
 {
 	int i, j, flag, s, t;
 	if (x >= 9)
 	{
+		//由第一行生成整个数独
 		for (i = 0; i < 3; i++)
 		{
 			for (j = 0; j < 3; j++)
@@ -88,6 +98,7 @@ void create_sdk(int x)
 			sdk[7][i] = sdk[6][(i + 3) % 9];
 			sdk[8][i] = sdk[6][(i + 6) % 9];
 		}
+		//每个数独可以有36种变换，对每个变换进行输出
 		for (i = 0; i < 6; i++)
 		{
 			for (j = 0; j < 6; j++)
@@ -101,17 +112,24 @@ void create_sdk(int x)
 				{
 					for (t = 0; t < 8; t++)
 					{
-						cout << sdk[s][t] << " ";
+						buffer[cnt++] = sdk[s][t] + '0';
+						buffer[cnt++] = ' ';
 					}
-					cout << sdk[s][8] << endl;
+					buffer[cnt++] = sdk[s][t] + '0';
+					buffer[cnt++] = '\n';
 				}
-				if (n > 0) cout << endl;
-				else return;
+				if (n > 0) buffer[cnt++] = '\n';
+				else
+				{
+					buffer[cnt++] = '\0';
+					return;
+				}
 			}
 		}
 	}
 	else
 	{
+		//DFS过程
 		for (i = 1; i <= 9; i++)
 		{
 			flag = 1;
@@ -134,16 +152,15 @@ void create_sdk(int x)
 	
 }
 
+//创建数独，创建一个随机数开始
 void create_rand(void)
 {
-	FILE *stream;
 	int i, j, r;
-	freopen_s(&stream, "D:\sudoku.txt", "w", stdout);
 	srand((unsigned)time(0));
 	sdk[0][0] = 4;
 	r = rand() % 8 + 1;
 	sdk[0][1] = (4 + r) % 9;
-	if (sdk[0][1] == 0) sdk[0][1] = 9;
+	if (sdk[0][1] == 0) sdk[0][1] = 9;  //创建数独第二位为1-9（不含4）的随机数
 	for (i = 0; i < 8; i++)
 	{
 		create_sdk(2);
@@ -153,6 +170,7 @@ void create_rand(void)
 	}
 }
 
+//填补数独中的0
 bool fill(int m)
 {
 	int i, x, y; //x是第m个元素的行数，y是列数
@@ -174,13 +192,14 @@ bool fill(int m)
 	return false;
 }
 
+//求解数独
 void solve(FILE *fp)
 {
 	int i, j;
 	int beginning;
 	FILE *output;
 	errno_t err;
-	err = fopen_s(&output, "D:\sudoku.txt", "w");
+	err = fopen_s(&output, "sudoku.txt", "w");
 	while (fscanf_s(fp, "%d", &beginning) != EOF)
 	{
 		sdk[0][0] = beginning;
@@ -236,6 +255,9 @@ int main(int argc,char *argv[])
 			else
 			{
 				create_rand();
+				FILE *stream;
+				freopen_s(&stream, "sudoku.txt", "w", stdout);
+				fputs(buffer, stream);
 			}
 		}
 		else if (argv[1][0] == '-'&&argv[1][1] == 's'&&strlen(argv[1]) == 2)

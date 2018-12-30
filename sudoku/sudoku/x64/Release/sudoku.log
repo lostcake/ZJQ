@@ -1,9 +1,7 @@
 ﻿  sudoku.cpp
-d:\sudoku\sudoku\sudoku.cpp(141): warning C4129: “s”: 不可识别的字符转义序列
-d:\sudoku\sudoku\sudoku.cpp(140): warning C4101: “j”: 未引用的局部变量
-d:\sudoku\sudoku\sudoku.cpp(183): warning C4129: “s”: 不可识别的字符转义序列
+d:\sudoku\sudoku\sudoku.cpp(158): warning C4101: “j”: 未引用的局部变量
   正在生成代码
-  3 of 27 functions (11.1%) were compiled, the rest were copied from previous compilation.
+  2 of 27 functions ( 7.4%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     0 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成
